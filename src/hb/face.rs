@@ -6,6 +6,7 @@ use read_fonts::{FontRef, TableProvider};
 use super::aat::AatTables;
 use super::buffer::GlyphPropsFlags;
 use super::charmap::Charmap;
+use super::colr::ColrTables;
 use super::glyph_metrics::GlyphMetrics;
 use super::glyph_names::GlyphNames;
 use super::ot::{LayoutTable, OtCache, OtTables};
@@ -29,6 +30,7 @@ impl ShaperFont {
         let units_per_em = font.head().map(|head| head.units_per_em()).unwrap_or(1000);
         let charmap = Charmap::new(font);
         let glyph_metrics = GlyphMetrics::new(font);
+        let colr_tables = ColrTables::new(font);
         let ot_tables = OtTables::new(font, &self.ot_cache, coords);
         let aat_tables = AatTables::new(font);
         hb_font_t {
@@ -38,6 +40,7 @@ impl ShaperFont {
             points_per_em: None,
             charmap,
             glyph_metrics,
+            colr_tables,
             ot_tables,
             aat_tables,
         }
@@ -56,6 +59,7 @@ pub struct hb_font_t<'a> {
     pub(crate) points_per_em: Option<f32>,
     charmap: Charmap<'a>,
     glyph_metrics: GlyphMetrics<'a>,
+    pub(crate) colr_tables: ColrTables<'a>,
     pub(crate) ot_tables: OtTables<'a>,
     pub(crate) aat_tables: AatTables<'a>,
 }
@@ -138,6 +142,12 @@ impl<'a> hb_font_t<'a> {
             glyph_extents.y_bearing = extents.y_max;
             glyph_extents.width = extents.x_max - extents.x_min;
             glyph_extents.height = extents.y_min - extents.y_max;
+            true
+        } else if let Some(bounds) = self.colr_tables.bounding_box(glyph, &self.ot_tables.coords) {
+            glyph_extents.x_bearing = bounds.x_min as i32;
+            glyph_extents.y_bearing = bounds.y_max as i32;
+            glyph_extents.width = (bounds.x_max - bounds.x_min) as i32;
+            glyph_extents.height = (bounds.y_min - bounds.y_max) as i32;
             true
         } else {
             false

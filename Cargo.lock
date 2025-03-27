@@ -81,6 +81,7 @@ dependencies = [
  "log",
  "pico-args",
  "read-fonts",
+ "skrifa",
  "smallvec",
  "ttf-parser",
  "unicode-bidi-mirroring",
@@ -159,9 +160,9 @@ dependencies = [
 
 [[package]]
 name = "read-fonts"
-version = "0.28.0"
+version = "0.27.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "600e807b48ac55bad68a8cb75cc3c7739f139b9248f7e003e01e080f589b5288"
+checksum = "f14974c88fb4fd0a7203719f98020209248c9dbebaf9d10d860337797a905097"
 dependencies = [
  "bytemuck",
  "core_maths",
@@ -186,6 +187,17 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "skrifa"
+version = "0.28.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "16e7936ca3627fdb516e97aca3c8ab5103f94ae32fe5ce80a0a02edcbacb7b53"
+dependencies = [
+ "bytemuck",
+ "core_maths",
+ "read-fonts",
 ]
 
 [[package]]

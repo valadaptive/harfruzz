@@ -29,6 +29,7 @@ mod aat_layout_morx_table;
 mod aat_layout_trak_table;
 mod aat_map;
 mod charmap;
+mod colr;
 pub mod common;
 pub mod face;
 mod glyph_metrics;
